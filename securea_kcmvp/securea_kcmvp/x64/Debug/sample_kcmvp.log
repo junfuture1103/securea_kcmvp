@@ -1,0 +1,35 @@
+﻿  KISA_ARIA.c
+  hmac_test.c
+C:\Users\jun\Downloads\ARIA\KISA_ARIA.c(54,1): error C1189: #error:  In order to compile this, you have to	  define either LITTLE_ENDIAN or BIG_ENDIAN.	  If unsure, try define either of one and run	  checkEndian() function to see if your guess	  is correct.
+  KISA_HMAC.c
+C:\Users\jun\Downloads\HMAC\[01] C,C++\KISA_HMAC.c(4,5): error C2371: 'HMAC_SHA256': 재정의. 기본 형식이 다릅니다.
+      C:\Users\jun\Downloads\HMAC\[01] C,C++\KISA_HMAC.h(7,6):
+      'HMAC_SHA256' 선언을 참조하십시오.
+  
+C:\Users\jun\Downloads\HMAC\[01] C,C++\KISA_HMAC.c(18,16): warning C4018: '<': signed 또는 unsigned가 일치하지 않습니다.
+C:\Users\jun\Downloads\HMAC\[01] C,C++\KISA_HMAC.c(26,16): warning C4018: '<': signed 또는 unsigned가 일치하지 않습니다.
+C:\Users\jun\Downloads\HMAC\[01] C,C++\KISA_HMAC.c(51,16): warning C4018: '<': signed 또는 unsigned가 일치하지 않습니다.
+C:\Users\jun\Downloads\HMAC\[01] C,C++\KISA_HMAC.c(59,16): warning C4018: '<': signed 또는 unsigned가 일치하지 않습니다.
+  KISA_SHA256.c
+C:\Users\jun\Downloads\KISA_SHA256\KISA_SHA256\[01] C-C++\KISA_SHA256.c(204,5): error C2371: 'SHA256_Encrpyt': 재정의. 기본 형식이 다릅니다.
+      C:\Users\jun\Downloads\KISA_SHA256\KISA_SHA256\[01] C-C++\KISA_SHA256.h(96,6):
+      'SHA256_Encrpyt' 선언을 참조하십시오.
+  
+  aria_test.c
+  integrity_test.c
+C:\Users\jun\Documents\카카오톡 받은 파일\05. 암호모듈 샘플\sample_kcmvp\sample_kcmvp\integrity_test.c(63,27): warning C4267: '함수': 'size_t'에서 'u32'(으)로 변환하면서 데이터가 손실될 수 있습니다.
+C:\Users\jun\Documents\카카오톡 받은 파일\05. 암호모듈 샘플\sample_kcmvp\sample_kcmvp\integrity_test.c(63,44): warning C4267: '함수': 'size_t'에서 'u32'(으)로 변환하면서 데이터가 손실될 수 있습니다.
+C:\Users\jun\Documents\카카오톡 받은 파일\05. 암호모듈 샘플\sample_kcmvp\sample_kcmvp\integrity_test.c(66,5): warning C4098: 'Mac': 'void' 함수에서 값을 반환하고 있습니다.
+  securea_kcmvp.c
+C:\Users\jun\Documents\카카오톡 받은 파일\05. 암호모듈 샘플\sample_kcmvp\sample_kcmvp\KISA_SHA256.h(45,17): error C2040: 'ULONG_PTR': 'ULONG *'의 간접 참조 수준이 'unsigned __int64'과(와) 다릅니다.
+  (소스 파일 'securea_kcmvp.c'을(를) 컴파일하는 중)
+  
+C:\Users\jun\Documents\카카오톡 받은 파일\05. 암호모듈 샘플\sample_kcmvp\sample_kcmvp\KISA_SHA256.h(48,16): error C2040: 'UINT_PTR': 'UINT *'의 간접 참조 수준이 'unsigned __int64'과(와) 다릅니다.
+  (소스 파일 'securea_kcmvp.c'을(를) 컴파일하는 중)
+  
+C:\Users\jun\Documents\카카오톡 받은 파일\05. 암호모듈 샘플\sample_kcmvp\sample_kcmvp\securea_kcmvp.c(702,56): error C2082: 'output' 정식 매개 변수 재정의
+C:\Users\jun\Documents\카카오톡 받은 파일\05. 암호모듈 샘플\sample_kcmvp\sample_kcmvp\securea_kcmvp.c(705,11): warning C4013: 'asc2hex'이(가) 정의되지 않았습니다. extern은 int형을 반환하는 것으로 간주합니다.
+C:\Users\jun\Documents\카카오톡 받은 파일\05. 암호모듈 샘플\sample_kcmvp\sample_kcmvp\securea_kcmvp.c(1022,7): warning C4013: 'test_hmac_sha256'이(가) 정의되지 않았습니다. extern은 int형을 반환하는 것으로 간주합니다.
+C:\Users\jun\Documents\카카오톡 받은 파일\05. 암호모듈 샘플\sample_kcmvp\sample_kcmvp\securea_kcmvp.c(1055,36): warning C4133: '함수': 'char [17]'과(와) 'LPCWSTR' 사이의 형식이 호환되지 않습니다.
+C:\Users\jun\Documents\카카오톡 받은 파일\05. 암호모듈 샘플\sample_kcmvp\sample_kcmvp\securea_kcmvp.c(1061,3): warning C4133: '함수': 'unsigned char [260]'과(와) 'LPWSTR' 사이의 형식이 호환되지 않습니다.
+  코드를 생성하고 있습니다...
