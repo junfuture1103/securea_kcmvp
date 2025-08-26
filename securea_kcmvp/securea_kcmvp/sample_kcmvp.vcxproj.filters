@@ -27,12 +27,6 @@
     <ClCompile Include="..\..\..\..\..\Downloads\HMAC\[01] C,C++\KISA_HMAC.c">
       <Filter>소스 파일</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\..\..\..\Downloads\HMAC\[01] C,C++\hmac_test.c">
-      <Filter>소스 파일</Filter>
-    </ClCompile>
-    <ClCompile Include="aria_test.c">
-      <Filter>소스 파일</Filter>
-    </ClCompile>
     <ClCompile Include="integrity_test.c">
       <Filter>소스 파일</Filter>
     </ClCompile>

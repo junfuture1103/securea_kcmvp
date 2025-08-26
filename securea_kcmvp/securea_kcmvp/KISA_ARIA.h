@@ -16,7 +16,7 @@ extern "C" {
 	 * @param rk: 라운드 키 (EncKeySetup으로 생성됨)
 	 * @param o: 출력 암호문 (16 bytes)
 	 */
-	void Crypt(const Byte* i, int Nr, const Byte* rk, Byte* o);
+	int Crypt(void* context, const Byte* i, int Nr, const Byte* rk, Byte* o);
 
 	/* 암호화 라운드 키 생성 함수
 	 * @param mk: 마스터 키

@@ -141,10 +141,8 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="..\..\..\..\..\Downloads\ARIA\KISA_ARIA.c" />
-    <ClCompile Include="..\..\..\..\..\Downloads\HMAC\[01] C,C++\hmac_test.c" />
     <ClCompile Include="..\..\..\..\..\Downloads\HMAC\[01] C,C++\KISA_HMAC.c" />
     <ClCompile Include="..\..\..\..\..\Downloads\KISA_SHA256\KISA_SHA256\[01] C-C++\KISA_SHA256.c" />
-    <ClCompile Include="aria_test.c" />
     <ClCompile Include="integrity_test.c" />
     <ClCompile Include="securea_kcmvp.c" />
   </ItemGroup>

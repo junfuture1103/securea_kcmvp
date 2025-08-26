@@ -219,9 +219,11 @@ EXPORT_API int CryptoFinalize(void** context)
 /// @param[in] inputLength 입력데이터의 길이
 /// @param[out] output 암호화된 출력데이터의 포인터
 /// @param[out] outputLength 출력데이터의 길이
-EXPORT_API int CryptoEncrypt(void* context, unsigned char* input, unsigned int inputLength, unsigned char* output, unsigned int* outputLength)
+EXPORT_API int SecureAEncrypt(void* context, unsigned char* input, unsigned int inputLength, unsigned char* output, unsigned int* outputLength)
 {
 	int rv = EC_SUCCESS;
+	int NumberRound = 0;
+
 	CRYPTO_CONTEXT* ctx = NULL;
 
 	/// 암호모듈 상태체크(암호모듈이 심각한 오류상태인 경우 상태오류코드를 출력)
@@ -275,7 +277,7 @@ EXPORT_API int CryptoEncrypt(void* context, unsigned char* input, unsigned int i
 		break;
 	case CRYPTO_ID_ARIA:
 		/// ARIA 알고리즘 구현
-		/// rv = ARIAEncrypt(ctx, input, output);
+		rv = Crypt(ctx, input, NumberRound, output, output);
 		break;
 	default:
 		SetState(STATE_CMVP_ERROR);
