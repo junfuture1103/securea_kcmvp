@@ -51,7 +51,7 @@
 #define EC_INPUT_VALUE			8		/// Input 데이터 입력값 오류(데이터 NULL)
 #define EC_OUTPUT_INIT			9		/// Output 데이터 입력값 오류(포인터 미할당)
 #define EC_HMAC_VERIFY			10		/// HMAC 검증 오류
-#define EC_PSS_VERIFY_ERROR		11		/// RSA 검증 오류
+#define EC_ARIA_VERIFY_ERROR	11		/// ARIA 검증 오류
 #define EC_SELFTEST_ERROR		12		/// 자가시험(핵심기능시험) 오류
 #define EC_INTEGRITY_VERIFY		13		/// 자가시험(무결성시험) 오류
 #define EC_DATA_NULL			14		/// 구조체 입력값 오류(NULL)
@@ -89,18 +89,21 @@ EXPORT_API int CryptoChangeState();
 EXPORT_API int CryptoInit(void** context, unsigned int algo, unsigned int mode, unsigned char* iv);
 EXPORT_API int CryptoFinalize(void** context);
 EXPORT_API int SecureAEncrypt(void* context, unsigned char* input, unsigned int inputLength, unsigned char* output, unsigned int* outputLength);
-EXPORT_API int CryptoDecrypt(void* context, unsigned char* input, unsigned int inputLength, unsigned char* output, unsigned int* outputLength);
-EXPORT_API int CryptoHash(void* context, unsigned char* input, unsigned inputLength, unsigned char* output);
-EXPORT_API int CryptoRandom(void* context, int requestLength, unsigned char* nonce, unsigned int nonceLength, unsigned char* personalString, unsigned int personalStringLength, unsigned char* additionalInput, unsigned int additionalInputLength, unsigned char* output);
+//EXPORT_API int CryptoDecrypt(void* context, unsigned char* input, unsigned int inputLength, unsigned char* output, unsigned int* outputLength);
+EXPORT_API int SecureACryptoHash(void* context, unsigned char* input, unsigned inputLength, unsigned char* output);
+//EXPORT_API int CryptoRandom(void* context, int requestLength, unsigned char* nonce, unsigned int nonceLength, unsigned char* personalString, unsigned int personalStringLength, unsigned char* additionalInput, unsigned int additionalInputLength, unsigned char* output);
 EXPORT_API int CryptoSetKey(void* context, unsigned char* key, unsigned int keyLength);
 EXPORT_API int CryptoCleanKey(void* context);
-EXPORT_API int CryptoHMac(void* context, unsigned char* input, unsigned int inputLength, unsigned char* output);
-EXPORT_API int CryptoHMacVerify(void* context, unsigned char* input, unsigned int inputLength, unsigned char* macValue, unsigned int macValueLength);
+EXPORT_API int SecureACryptHMac(void* context, unsigned char* input, unsigned int inputLength, unsigned char* output);
+EXPORT_API int SecureAHMacVerify(void* context, unsigned char* input, unsigned int inputLength, unsigned char* macValue, unsigned int macValueLength);
 //EXPORT_API int CryptoRSAEncrypt(void* context, unsigned char* publickey, unsigned int publickeyLength, unsigned char* exponent, unsigned int exponentLength, unsigned char* input, unsigned int inputLength, unsigned char* output, unsigned char* seed, unsigned int seedLength);
 //EXPORT_API int CryptoRSADecrypt(void* context, unsigned char* privatekey, unsigned int privatekeyLength, unsigned char* publickey, unsigned int publickeyLength, unsigned char* input, unsigned int inputLength, unsigned char* output, unsigned int* outputLength);
-EXPORT_API int CoreFunctionTest();
-EXPORT_API int IntegrityTest();
+EXPORT_API int SecureACoreFunctionTest();
+EXPORT_API int SecureAIntegrityTest();
 EXPORT_API int CryptoGetLastErrorCode();
+
+//No EXPORT_API
+int asc2hex(unsigned char* dst, const char* src);
 
 //#ifdef WIN32
 #ifdef __cplusplus

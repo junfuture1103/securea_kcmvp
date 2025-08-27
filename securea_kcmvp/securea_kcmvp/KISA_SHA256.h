@@ -41,19 +41,19 @@ extern "C" {
 #endif
 #endif
 
-	typedef unsigned long ULONG;
-	typedef ULONG* ULONG_PTR;
+	//typedef unsigned long ULONG;
+	//typedef ULONG* ULONG_PTR;
 
 	typedef unsigned int UINT;
-	typedef UINT* UINT_PTR;
+	//typedef UINT* UINT_PTR;
 
-	typedef signed int SINT;
-	typedef SINT* SINT_PTR;
+	//typedef signed int SINT;
+	//typedef SINT* SINT_PTR;
 
-	typedef unsigned char UCHAR;
-	typedef UCHAR* UCHAR_PTR;
+	//typedef unsigned char UCHAR;
+	//typedef UCHAR* UCHAR_PTR;
 
-	typedef unsigned char BYTE;
+	//typedef unsigned char BYTE;
 
 #define SHA256_DIGEST_BLOCKLEN	64
 #define SHA256_DIGEST_VALUELEN	32

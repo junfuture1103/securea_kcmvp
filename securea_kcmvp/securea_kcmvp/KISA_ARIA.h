@@ -38,6 +38,7 @@ extern "C" {
 	 * endian 검출, 테스트 벡터 검증 및 round-trip 확인
 	 */
 	void ARIA_test(void);
+	int ARIA_encrypt(void);
 
 	/* 블록 출력 함수 (디버깅용) */
 	void printBlock(Byte* b);

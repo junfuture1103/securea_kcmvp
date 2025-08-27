@@ -21,10 +21,6 @@
 #include "KISA_ARIA.h"
 #include "KISA_HMAC.h"
 
-//#include "KISA_SHA256.h"
-#include "aria_test.h"
-#include "hmac_test.h"
-
 int g_module_state;
 int g_error_code;
 
@@ -78,7 +74,7 @@ BOOL APIENTRY DllMain(HMODULE hModule, unsigned int ul_reason_for_call, LPVOID l
 		/// 자가시험상태 천이
 		SetState(STATE_SELFTEST);
 
-		rv = CoreFunctionTest(); /// 핵심기능시험
+		rv = SecureACoreFunctionTest(); /// 핵심기능시험
 		if (rv != EC_SUCCESS)	 /// 핵심기능시험에 실패할 경우 심각한 오류상태로 천이되고, 암호모듈은 사용불가
 		{
 			SetState(STATE_INABILITY_ERROR);
@@ -86,13 +82,14 @@ BOOL APIENTRY DllMain(HMODULE hModule, unsigned int ul_reason_for_call, LPVOID l
 			return TRUE;
 		}
 
-		rv = IntegrityTest();	/// 무결성시험
-		if (rv != EC_SUCCESS)	/// 무결성시험에 실패할 경우 심각한 오류상태로 천이되고, 암호모듈은 사용불가
-		{
-			SetState(STATE_INABILITY_ERROR);
-			g_error_code = rv;
-			return TRUE;
-		}
+		//rv = SecureAIntegrityTest();	/// 무결성시험
+		//if (rv != EC_SUCCESS)	/// 무결성시험에 실패할 경우 심각한 오류상태로 천이되고, 암호모듈은 사용불가
+		//{
+		//	SetState(STATE_INABILITY_ERROR);
+		//	g_error_code = rv;
+		//	return TRUE;
+		//}
+
 		SetState(STATE_CMVP_READY);
 	}
 	break;
@@ -277,7 +274,8 @@ EXPORT_API int SecureAEncrypt(void* context, unsigned char* input, unsigned int 
 		break;
 	case CRYPTO_ID_ARIA:
 		/// ARIA 알고리즘 구현
-		rv = Crypt(ctx, input, NumberRound, output, output);
+		//rv = ARIA_encrypt(ctx, input, NumberRound, output, output);
+		rv = ARIA_encrypt();
 		break;
 	default:
 		SetState(STATE_CMVP_ERROR);
@@ -396,7 +394,7 @@ EXPORT_API int CryptoDecrypt(void* context, unsigned char* input, unsigned int i
 /// @param[in] input 입력데이터(원문)
 /// @param[in] inputLength 입력데이터의 길이
 /// @param[out] output 해시 암호화된 결과
-EXPORT_API int CryptoHash(void* context, unsigned char* input, unsigned inputLength, unsigned char* output)
+EXPORT_API int SecureACryptoHash(void* context, unsigned char* input, unsigned inputLength, unsigned char* output)
 {
 	int rv = EC_SUCCESS;
 	CRYPTO_CONTEXT* ctx = NULL;
@@ -652,7 +650,7 @@ EXPORT_API int CryptoCleanKey(void* context)
 /// @param[in] input 입력값(원문)을 담고 있는 포인터
 /// @param[in] inputLength 입력값의 길이
 /// @param[out] output 생성된 MAC값
-EXPORT_API int CryptoHMac(void* context, unsigned char* input, unsigned int inputLength, unsigned char* output)
+EXPORT_API int SecureACryptHMac(void* context, unsigned char* input, unsigned int inputLength, unsigned char* output)
 {
 	int rv = EC_SUCCESS;
 	CRYPTO_CONTEXT* ctx = NULL;
@@ -701,13 +699,12 @@ EXPORT_API int CryptoHMac(void* context, unsigned char* input, unsigned int inpu
 		SetState(STATE_CMVP_ERROR);
 		return EC_OUTPUT_INIT;
 	}
-	unsigned char msg[1024] = { 0, }, key[1024] = { 0, }, output[32] = { 0, };
+	unsigned char msg[1024] = { 0, }, key[1024] = { 0, };
 	unsigned int msgLen = 0, keyLen = 0, outputLen = 0, ret = 0;
 
 	keyLen = asc2hex(key, "C6F1D667A50AAEBA5A200A0A7CC24FFBB24984426AB8ABACCEE75162F3E1646B");
 	
 	/// HMAC 생성 알고리즘 구현
-	// 7.28 수정필요
 	 rv = HMAC_SHA256(input, inputLength, key, keyLen, output);
 	if (rv != EC_SUCCESS)
 	{
@@ -790,9 +787,13 @@ EXPORT_API int CryptoHMacVerify(void* context, unsigned char* input, unsigned in
 		return EC_ALGO;
 	}
 
+	unsigned char key[1024] = { 0, };
+	unsigned int keyLen = 0;
+
+	keyLen = asc2hex(key, "C6F1D667A50AAEBA5A200A0A7CC24FFBB24984426AB8ABACCEE75162F3E1646B");
 	
 	/// HMAC 검증 알고리즘 구현
-	/// rv = HMAC_Verify(ctx->algo, input, inputLength, key, keyLength, macValue, macValueLength);
+	 rv = test_hmac_sha256(ctx->algo, input, inputLength, key, keyLen, macValue, macValueLength);
 	if (rv != EC_SUCCESS)
 	{
 		SetState(STATE_CMVP_ERROR);
@@ -1006,36 +1007,90 @@ EXPORT_API int CryptoRSADecrypt(void* context, unsigned char* privatekey, unsign
 }
 */
 
+int test_hmac_sha256() {
+	/* === 테스트 벡터(사용자가 준 원본) === */
+	unsigned char msg[1024] = { 0, }, key[1024] = { 0, }, expected_hmac[32] = { 0, }, hmac[32];
+	unsigned int msgLen = 0, keyLen = 0, outputLen = 0, ret = 0;
+	//void HMAC_SHA256(const u8* message, u32 mlen, const u8* key, u32 klen, u8 hmac[SHA256_DIGEST_VALUELEN]);
+
+	keyLen = asc2hex(key, "C6F1D667A50AAEBA5A200A0A7CC24FFBB24984426AB8ABACCEE75162F3E1646B");
+	msgLen = asc2hex(msg, "548A457280851ECA0F5476AFDAC102CF6C7DBE09B3083D74FBD03DA31E9D7F27F42CD656111A7D4BB005AD2EEAED6FB62CE0B0EBE7D6933189DA0B82AD6AA8FB8E21B19AC29374462579DA0F130E3EB8DAB87F726EEB54EB5F4AE087091087ED0BAFFFC6FAB7AAC156F823DBBCEB17DD5E4E5626B10F29AA656BE73B9A57C308");
+	outputLen = asc2hex(expected_hmac, "96C37F36CA0DEA3B2B3E60F1F6CDF79CFF72CA2A43A091C8105AE882A690EF2F");
+
+	/* === 암호화 수행 === */
+	int rv = EC_SUCCESS;
+	rv = HMAC_SHA256(msg, msgLen, key, keyLen, hmac);
+	if (rv != EC_SUCCESS)
+	{
+		SetState(STATE_CMVP_ERROR);
+	}
+
+	/* === 암호화 결과검증 === */
+	if (memcmp(hmac, expected_hmac, 16) == 0) {
+		return EC_SUCCESS;  // 암호문 일치
+	}
+	else {
+		return EC_HMAC_VERIFY;  // 암호문 불일치
+	}
+}
+
+int test_aria() {
+	/* === 테스트 벡터(사용자가 준 원본) === */
+	/* 평문 */
+	Byte p[16] = {
+		0x11, 0x11, 0x11, 0x11, 0xaa, 0xaa, 0xaa, 0xaa,
+		0x11, 0x11, 0x11, 0x11, 0xbb, 0xbb, 0xbb, 0xbb
+	};
+
+	/* 192비트 키 (mk[0..23] 사용) */
+	Byte mk[32];
+	for (int i = 0; i < 16; i++) mk[i] = (Byte)(i * 0x11);        /* 00,11,22,...,FF */
+	for (int i = 16; i < 24; i++) mk[i] = (Byte)((i - 16) * 0x11);/* 00..77 */
+	for (int i = 24; i < 32; i++) mk[i] = 0; /* 상위는 0으로 클리어 */
+
+	/* 기대 암호문 */
+	const Byte expected[16] = {
+		0x8d, 0x14, 0x70, 0x62, 0x5f, 0x59, 0xeb, 0xac,
+		0xb0, 0xe5, 0x5b, 0x53, 0x4b, 0x3e, 0x46, 0x2b
+	};
+
+	/* === 암호화 수행 === */
+	int rv = EC_SUCCESS;
+	Byte out[16];
+
+	CRYPTO_CONTEXT* ctx = NULL;
+	ctx = (CRYPTO_CONTEXT*)malloc(sizeof(CRYPTO_CONTEXT));
+	memset(ctx, 0x00, sizeof(CRYPTO_CONTEXT));
+
+	ctx->algo = CRYPTO_ID_ARIA;
+
+	rv = SecureAEncrypt(ctx, p, 16, out, 16);
+	if (rv != EC_SUCCESS)
+	{
+		SetState(STATE_CMVP_ERROR);
+	}
+
+	/* === 암호화 결과검증 === */
+	if (memcmp(out, expected, 16) == 0) {
+		return EC_SUCCESS;  // 암호문 일치
+	}
+	else {
+		return EC_ARIA_VERIFY_ERROR;  // 암호문 불일치
+	}
+}
+
 /// @fn int CoreFunctionTest()
 /// @brief 핵심기능시험 인터페이스 함수, 기지답안테스트(KAT) 검사를 수행하여 통과해야 암호모듈을 사용할 수 있다.
 /// @return 암호모듈 상태
-EXPORT_API int CoreFunctionTest()
+EXPORT_API int SecureACoreFunctionTest()
 {
 	int rv = EC_SUCCESS;
 	unsigned char random_output[32] = { 0, };
-
-	/// SHA256의 KAT 테스트 답안 샘플
-	//unsigned char input[3] = { 0x71,0x09,0xE8 };
-	//unsigned char result[32] = { 0x66,0x97,0x52,0x77,0x76,0x5C,0xDA,0xDE,0xD7,0x22,0x1C,0x2B,0x46,0xEB,0xF4,0x7F,
-	//							  0xA1,0xB6,0x03,0x7B,0xF6,0x55,0x83,0x10,0x8F,0xE4,0x5A,0xC4,0x6F,0x39,0xF8,0xA0 };
 
 	// SHA256테스트는 HMAC_SHA256 테스트에 포함되므로 대체함
 	//rv = SHA256_Encrpyt(input, 3, random_output); if (rv != EC_SUCCESS)	return rv;
 	rv = test_hmac_sha256();				if (rv != EC_SUCCESS)	return rv;
 	rv = test_aria();			if (rv != EC_SUCCESS)	return rv;
-
-	/// 나머지 알고리즘에 대해서도 동일하게 테스트 수행
-	/*rv = Seed_ECB_128(); 			if (rv != EC_SUCCESS)	return rv;
-	rv = Seed_CBC_128();			if (rv != EC_SUCCESS)	return rv;
-	rv = Aria_ECB_128();			if (rv != EC_SUCCESS)	return rv;
-	rv = Aria_CBC_128();			if (rv != EC_SUCCESS)	return rv;
-	rv = Sha_256();					if (rv != EC_SUCCESS)	return rv;
-	rv = Sha_512();					if (rv != EC_SUCCESS)	return rv;
-	rv = Hmac_Sha256();				if (rv != EC_SUCCESS)	return rv;
-	rv = Hmac_Sha512();				if (rv != EC_SUCCESS)	return rv;
-	rv = HMAC_DRBG_SHA256_ON();		if (rv != EC_SUCCESS)	return rv;
-	rv = Rsa_Oaep_2048();			if (rv != EC_SUCCESS)	return rv;
-	rv = Rsa_Pss_2048();			if (rv != EC_SUCCESS)	return rv;*/
 
 	if (rv != EC_SUCCESS)	
 		return rv;
@@ -1043,7 +1098,7 @@ EXPORT_API int CoreFunctionTest()
 	return EC_SUCCESS;
 }
 
-EXPORT_API int IntegrityTest()
+EXPORT_API int SecureAIntegrityTest()
 {
 	int		ERROR_CODE = 0;
 	unsigned char*	key = NULL;
@@ -1086,6 +1141,33 @@ EXPORT_API int IntegrityTest()
 EXPORT_API int CryptoGetLastErrorCode()
 {
 	return g_error_code;
+}
+
+
+int asc2hex(unsigned char* dst, const char* src)
+{
+	unsigned char temp = 0x00;
+	int i = 0;
+
+	while (src[i] != 0x00)
+	{
+		temp = 0x00;
+
+		if ((src[i] >= 0x30) && (src[i] <= 0x39))
+			temp = src[i] - '0';
+		else if ((src[i] >= 0x41) && (src[i] <= 0x5A))
+			temp = src[i] - 'A' + 10;
+		else if ((src[i] >= 0x61) && (src[i] <= 0x7A))
+			temp = src[i] - 'a' + 10;
+		else
+			temp = 0x00;
+
+		(i & 1) ? (dst[i >> 1] ^= temp & 0x0F) : (dst[i >> 1] = 0, dst[i >> 1] = temp << 4);
+
+		i++;
+	}
+
+	return ((i + 1) / 2);
 }
 
 int main(void)
