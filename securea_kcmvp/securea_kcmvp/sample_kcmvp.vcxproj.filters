@@ -30,6 +30,15 @@
     <ClCompile Include="integrity_test.c">
       <Filter>소스 파일</Filter>
     </ClCompile>
+    <ClCompile Include="KISA_drbg.c">
+      <Filter>소스 파일</Filter>
+    </ClCompile>
+    <ClCompile Include="ariacbc.c">
+      <Filter>소스 파일</Filter>
+    </ClCompile>
+    <ClCompile Include="seedcbc.c">
+      <Filter>소스 파일</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="securea_kcmvp.h">
@@ -48,6 +57,15 @@
       <Filter>헤더 파일</Filter>
     </ClInclude>
     <ClInclude Include="integrity_test.h">
+      <Filter>헤더 파일</Filter>
+    </ClInclude>
+    <ClInclude Include="KISA_drbg.h">
+      <Filter>헤더 파일</Filter>
+    </ClInclude>
+    <ClInclude Include="ariacbc.h">
+      <Filter>헤더 파일</Filter>
+    </ClInclude>
+    <ClInclude Include="seedcbc.h">
       <Filter>헤더 파일</Filter>
     </ClInclude>
   </ItemGroup>

@@ -20,6 +20,7 @@
 #include "KISA_SHA256.h"
 #include "KISA_ARIA.h"
 #include "KISA_HMAC.h"
+#include "KISA_drbg.h"
 
 int g_module_state;
 int g_error_code;
@@ -274,8 +275,7 @@ EXPORT_API int SecureAEncrypt(void* context, unsigned char* input, unsigned int 
 		break;
 	case CRYPTO_ID_ARIA:
 		/// ARIA 알고리즘 구현
-		//rv = ARIA_encrypt(ctx, input, NumberRound, output, output);
-		rv = ARIA_encrypt();
+		rv = ARIA_encrypt(ctx, input, NumberRound, output, output);
 		break;
 	default:
 		SetState(STATE_CMVP_ERROR);
@@ -311,7 +311,7 @@ EXPORT_API int SecureAEncrypt(void* context, unsigned char* input, unsigned int 
 /// @param[in] inputLength 입력데이터의 길이
 /// @param[out] output 복호화된 출력데이터의 포인터
 /// @param[out] outputLength 출력데이터의 길이
-EXPORT_API int CryptoDecrypt(void* context, unsigned char* input, unsigned int inputLength, unsigned char* output, unsigned int* outputLength)
+EXPORT_API int SecureACryptoDecrypt(void* context, unsigned char* input, unsigned int inputLength, unsigned char* output, unsigned int* outputLength)
 {
 	int rv = EC_SUCCESS;
 	CRYPTO_CONTEXT* ctx = NULL;
@@ -367,7 +367,7 @@ EXPORT_API int CryptoDecrypt(void* context, unsigned char* input, unsigned int i
 		break;
 	case CRYPTO_ID_ARIA:
 		/// ARIA
-		 //rv = Crypt(input, output);
+		 rv = ARIA_decrypt(ctx, input, 1, output, output);
 		break;
 	default:
 		SetState(STATE_CMVP_ERROR);
@@ -466,7 +466,7 @@ EXPORT_API int SecureACryptoHash(void* context, unsigned char* input, unsigned i
 /// @param[in] additionalInput 난수생성시 사용할 추가입력 데이터
 /// @param[in] additionalInput 추가입력문자의 길이
 /// @param[out] output 생성된 난수 출력값
-EXPORT_API int CryptoRandom(void* context, int requestLength, 
+EXPORT_API int SecureACryptoRandom(void* context, int requestLength, 
 	unsigned char* nonce, unsigned int nonceLength, 
 	unsigned char* personalString, unsigned int personalStringLength,
 	unsigned char* additionalInput, unsigned int additionalInputLength,
@@ -538,8 +538,12 @@ EXPORT_API int CryptoRandom(void* context, int requestLength,
 		}
 	}
 
-	/// 랜덤 알고리즘 구현
-	/// rv = DRBG_RANDOM(ctx, nonce, personalString, additionalInput, output);
+	 // 랜덤 알고리즘 구현
+	 //rv = DRBG_RANDOM(ctx, nonce, personalString, additionalInput, output);	
+	 
+	 int num_of_bits = requestLength * 8;
+	 rv =  KISA_CTR_DRBG_Generate(ctx, output, num_of_bits, additionalInput, additionalInputLength);
+
 	if (rv != EC_SUCCESS)
 	{
 		if (GetState() != STATE_INABILITY_ERROR)

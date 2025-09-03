@@ -143,16 +143,22 @@
     <ClCompile Include="..\..\..\..\..\Downloads\ARIA\KISA_ARIA.c" />
     <ClCompile Include="..\..\..\..\..\Downloads\HMAC\[01] C,C++\KISA_HMAC.c" />
     <ClCompile Include="..\..\..\..\..\Downloads\KISA_SHA256\KISA_SHA256\[01] C-C++\KISA_SHA256.c" />
+    <ClCompile Include="ariacbc.c" />
     <ClCompile Include="integrity_test.c" />
+    <ClCompile Include="KISA_drbg.c" />
     <ClCompile Include="securea_kcmvp.c" />
+    <ClCompile Include="seedcbc.c" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="ariacbc.h" />
     <ClInclude Include="common.h" />
     <ClInclude Include="integrity_test.h" />
     <ClInclude Include="KISA_ARIA.h" />
+    <ClInclude Include="KISA_drbg.h" />
     <ClInclude Include="KISA_HMAC.h" />
     <ClInclude Include="KISA_SHA256.h" />
     <ClInclude Include="securea_kcmvp.h" />
+    <ClInclude Include="seedcbc.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

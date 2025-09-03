@@ -37,8 +37,8 @@ extern "C" {
 	/* 기본 테스트 함수
 	 * endian 검출, 테스트 벡터 검증 및 round-trip 확인
 	 */
-	void ARIA_test(void);
-	int ARIA_encrypt(void);
+	int ARIA_encrypt(void* context, unsigned char* input, unsigned int inputLength, unsigned char* output, unsigned int* outputLength);
+	int ARIA_decrypt(const Byte* mk, int keyBits, const Byte* in, unsigned int inLen, Byte* out);
 
 	/* 블록 출력 함수 (디버깅용) */
 	void printBlock(Byte* b);
