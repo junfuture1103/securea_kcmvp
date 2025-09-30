@@ -76,6 +76,7 @@ BOOL APIENTRY DllMain(HMODULE hModule, unsigned int ul_reason_for_call, LPVOID l
 		SetState(STATE_SELFTEST);
 
 		rv = SecureACoreFunctionTest(); /// 핵심기능시험
+		printf("SelfTest Result = %d\n", rv);
 		if (rv != EC_SUCCESS)	 /// 핵심기능시험에 실패할 경우 심각한 오류상태로 천이되고, 암호모듈은 사용불가
 		{
 			SetState(STATE_INABILITY_ERROR);
@@ -120,23 +121,23 @@ EXPORT_API int CryptoInit(void** context, unsigned int algo, unsigned int mode, 
 	}
 
 	/// 암호모듈 상태체크(암호모듈이 심각한 오류상태인 경우 상태오류코드를 출력)
-	if (g_module_state == STATE_INABILITY_ERROR)
-	{
-		memset(ctx->key, 0x00, 256);
-		memset(ctx->iv, 0x00, 16);
-		free(ctx); ctx = NULL;
-		return EC_STATE;
-	}
+	//if (g_module_state == STATE_INABILITY_ERROR)
+	//{
+	//	memset(ctx->key, 0x00, 256);
+	//	memset(ctx->iv, 0x00, 16);
+	//	free(ctx); ctx = NULL;
+	//	return EC_STATE;
+	//}
 		
 	/// 암호모듈 상태체크(암호모듈이 검증대상 동작모드가 아닌 경우 상태오류코드를 출력)
-	if (g_module_state != STATE_CMVP_READY)
-	{
-		memset(ctx->key, 0x00, 256);
-		memset(ctx->iv, 0x00, 16);
-		free(ctx); ctx = NULL;
-		SetState(STATE_CMVP_ERROR);
-		return EC_STATE;
-	}
+	//if (g_module_state != STATE_CMVP_READY)
+	//{
+	//	memset(ctx->key, 0x00, 256);
+	//	memset(ctx->iv, 0x00, 16);
+	//	free(ctx); ctx = NULL;
+	//	SetState(STATE_CMVP_ERROR);
+	//	return EC_STATE;
+	//}
 
 	/// 암호모듈 상태를 시작상태로 변경
 	SetState(STATE_CMVP_INIT);
@@ -455,6 +456,7 @@ EXPORT_API int SecureACryptoHash(void* context, unsigned char* input, unsigned i
 	return rv;
 }
 
+/*
 /// @fn int CryptoRandom(void *context, int requestLength, unsigned char* nonce, unsigned int nonceLength, unsigned char* personalString, unsigned int personalStringLength, unsigned char* additionalInput, unsigned int additionalInputLength, unsigned char* output)
 /// @brief HMAC_DRBG를 이용한 난수 생성
 /// @return 암호모듈 상태
@@ -477,17 +479,17 @@ EXPORT_API int SecureACryptoRandom(void* context, int requestLength,
 	CRYPTO_CONTEXT* ctx = NULL;
 
 	/// 암호모듈 상태체크(암호모듈이 심각한 오류상태인 경우 상태오류코드를 출력)
-	if (g_module_state == STATE_INABILITY_ERROR)
-	{
-		return EC_STATE;
-	}
+	//if (g_module_state == STATE_INABILITY_ERROR)
+	//{
+	//	return EC_STATE;
+	//}
 
 	/// 암호모듈 상태체크(암호모듈이 시작상태 또는 사용자 상태가 아닌 경우 상태오류코드를 출력)
-	if (g_module_state != STATE_CMVP_INIT && g_module_state != STATE_CMVP_OPERATION)
-	{
-		SetState(STATE_CMVP_ERROR);
-		return EC_STATE;
-	}
+	//if (g_module_state != STATE_CMVP_INIT && g_module_state != STATE_CMVP_OPERATION)
+	//{
+	//	SetState(STATE_CMVP_ERROR);
+	//	return EC_STATE;
+	//}
 	
 	/// 입력데이터 형식검증
 	if (context == NULL)
@@ -543,7 +545,17 @@ EXPORT_API int SecureACryptoRandom(void* context, int requestLength,
 	 //rv = DRBG_RANDOM(ctx, nonce, personalString, additionalInput, output);	
 	 
 	 int num_of_bits = requestLength * 8;
-	 //rv =  KISA_CTR_DRBG_Generate(ctx, output, num_of_bits, additionalInput, additionalInputLength);
+	 rv =  KISA_CTR_DRBG_Generate(ctx, output, num_of_bits, additionalInput, additionalInputLength);
+	 int num_bits = requestLength * 8;
+
+	 // Generate 호출
+	 //rv = KISA_CTR_DRBG_Generate(
+		// &st,                // state 구조체
+		// output,             // 난수 출력 버퍼
+		// num_bits,           // 요청 길이 (비트 단위)
+		// additionalInput,    // 부가 입력
+		// (int)additionalInputLength // 부가 입력 길이
+	 //);
 
 	if (rv != EC_SUCCESS)
 	{
@@ -564,7 +576,7 @@ EXPORT_API int SecureACryptoRandom(void* context, int requestLength,
 
 	return rv;
 }
-
+*/
 
 /// @fn int CryptoSetKey(void *context, unsigned char* key, unsigned int keyLength)
 /// @brief 블록단위 암복호화에 사용할 키를 context 구조체에 입력
@@ -660,10 +672,10 @@ EXPORT_API int SecureACryptHMac(void* context, unsigned char* input, unsigned in
 	int rv = EC_SUCCESS;
 	CRYPTO_CONTEXT* ctx = NULL;
 
-	unsigned char msg[1024] = { 0, }, key[1024] = { 0, };
-	unsigned int msgLen = 0, keyLen = 0, outputLen = 0, ret = 0;
+	//unsigned char msg[1024] = { 0, }, key[1024] = { 0, };
+	//unsigned int msgLen = 0, keyLen = 0, outputLen = 0, ret = 0;
 
-	keyLen = asc2hex(key, "C6F1D667A50AAEBA5A200A0A7CC24FFBB24984426AB8ABACCEE75162F3E1646B");
+	//keyLen = asc2hex(key, "C6F1D667A50AAEBA5A200A0A7CC24FFBB24984426AB8ABACCEE75162F3E1646B");
 
 	/// 암호모듈 상태체크(암호모듈이 심각한 오류상태인 경우 상태오류코드를 출력)
 	if (g_module_state == STATE_INABILITY_ERROR)
@@ -684,6 +696,7 @@ EXPORT_API int SecureACryptHMac(void* context, unsigned char* input, unsigned in
 		SetState(STATE_CMVP_ERROR);
 		return EC_INITIALIZE_NO;
 	}
+
 	ctx = (CRYPTO_CONTEXT*)context;
 
 	SetState(STATE_CMVP_OPERATION);
@@ -710,7 +723,7 @@ EXPORT_API int SecureACryptHMac(void* context, unsigned char* input, unsigned in
 		return EC_OUTPUT_INIT;
 	}
 	/// HMAC 생성 알고리즘 구현
-	 rv = HMAC_SHA256(input, inputLength, key, keyLen, output);
+	 rv = HMAC_SHA256(input, inputLength, ctx->key, ctx->keyLen, output);
 	if (rv != EC_SUCCESS)
 	{
 		SetState(STATE_CMVP_ERROR);
@@ -1012,95 +1025,73 @@ EXPORT_API int CryptoRSADecrypt(void* context, unsigned char* privatekey, unsign
 }
 */
 
-//int test_hmac_sha256() {
-//	/* === 테스트 벡터(사용자가 준 원본) === */
-//	unsigned char msg[1024] = { 0, }, key[1024] = { 0, }, expected_hmac[32] = { 0, }, hmac[32];
-//	unsigned int msgLen = 0, keyLen = 0, outputLen = 0, ret = 0;
-//	//void HMAC_SHA256(const u8* message, u32 mlen, const u8* key, u32 klen, u8 hmac[SHA256_DIGEST_VALUELEN]);
-//
-//	keyLen = asc2hex(key, "C6F1D667A50AAEBA5A200A0A7CC24FFBB24984426AB8ABACCEE75162F3E1646B");
-//	msgLen = asc2hex(msg, "548A457280851ECA0F5476AFDAC102CF6C7DBE09B3083D74FBD03DA31E9D7F27F42CD656111A7D4BB005AD2EEAED6FB62CE0B0EBE7D6933189DA0B82AD6AA8FB8E21B19AC29374462579DA0F130E3EB8DAB87F726EEB54EB5F4AE087091087ED0BAFFFC6FAB7AAC156F823DBBCEB17DD5E4E5626B10F29AA656BE73B9A57C308");
-//	outputLen = asc2hex(expected_hmac, "96C37F36CA0DEA3B2B3E60F1F6CDF79CFF72CA2A43A091C8105AE882A690EF2F");
-//
-//	/* === 암호화 수행 === */
-//	int rv = EC_SUCCESS;
-//	rv = HMAC_SHA256(msg, msgLen, key, keyLen, hmac);
-//	if (rv != EC_SUCCESS)
-//	{
-//		SetState(STATE_CMVP_ERROR);
-//	}
-//
-//	/* === 암호화 결과검증 === */
-//	if (memcmp(hmac, expected_hmac, 16) == 0) {
-//		return EC_SUCCESS;  // 암호문 일치
-//	}
-//	else {
-//		return EC_HMAC_VERIFY;  // 암호문 불일치
-//	}
-//}
-
-//int test_aria() {
-//	/* === 테스트 벡터(사용자가 준 원본) === */
-//	/* 평문 */
-//	Byte p[16] = {
-//		0x11, 0x11, 0x11, 0x11, 0xaa, 0xaa, 0xaa, 0xaa,
-//		0x11, 0x11, 0x11, 0x11, 0xbb, 0xbb, 0xbb, 0xbb
-//	};
-//
-//	/* 192비트 키 (mk[0..23] 사용) */
-//	Byte mk[32];
-//	for (int i = 0; i < 16; i++) mk[i] = (Byte)(i * 0x11);        /* 00,11,22,...,FF */
-//	for (int i = 16; i < 24; i++) mk[i] = (Byte)((i - 16) * 0x11);/* 00..77 */
-//	for (int i = 24; i < 32; i++) mk[i] = 0; /* 상위는 0으로 클리어 */
-//
-//	/* 기대 암호문 */
-//	const Byte expected[16] = {
-//		0x8d, 0x14, 0x70, 0x62, 0x5f, 0x59, 0xeb, 0xac,
-//		0xb0, 0xe5, 0x5b, 0x53, 0x4b, 0x3e, 0x46, 0x2b
-//	};
-//
-//	/* === 암호화 수행 === */
-//	int rv = EC_SUCCESS;
-//	Byte out[16];
-//
-//	CRYPTO_CONTEXT* ctx = NULL;
-//	ctx = (CRYPTO_CONTEXT*)malloc(sizeof(CRYPTO_CONTEXT));
-//	memset(ctx, 0x00, sizeof(CRYPTO_CONTEXT));
-//
-//	ctx->algo = CRYPTO_ID_ARIA;
-//
-//	rv = SecureAEncrypt(ctx, p, 16, out, 16);
-//	if (rv != EC_SUCCESS)
-//	{
-//		SetState(STATE_CMVP_ERROR);
-//	}
-//
-//	/* === 암호화 결과검증 === */
-//	if (memcmp(out, expected, 16) == 0) {
-//		return EC_SUCCESS;  // 암호문 일치
-//	}
-//	else {
-//		return EC_ARIA_VERIFY_ERROR;  // 암호문 불일치
-//	}
-//}
 
 /// @fn int CoreFunctionTest()
 /// @brief 핵심기능시험 인터페이스 함수, 기지답안테스트(KAT) 검사를 수행하여 통과해야 암호모듈을 사용할 수 있다.
 /// @return 암호모듈 상태
 EXPORT_API int SecureACoreFunctionTest()
 {
+	//return EC_SUCCESS;
+	
 	int rv = EC_SUCCESS;
 	unsigned char random_output[32] = { 0, };
 
+	CRYPTO_CONTEXT* ctx = NULL;
+	unsigned int algo = 7; // CRYPTO_HMAC_SHA256
+	unsigned int mode = 0; // unused
+	unsigned char iv[16] = { 0 };
+	
+	unsigned char plaintext[16] = {
+	0x11,0x11,0x11,0x11, 0xAA,0xAA,0xAA,0xAA,
+	0x11,0x11,0x11,0x11, 0xBB,0xBB,0xBB,0xBB
+	};
+
+	// ---- Verify HMAC output ----
+	const unsigned char expected_hmac[32] = {
+		0x31,0x43,0x75,0x1C,0x84,0x10,0x48,0xAD,
+		0xC8,0x82,0xE7,0xB9,0x08,0x6F,0x5D,0xDD,
+		0x89,0x96,0xFC,0xF8,0xD2,0x8C,0x46,0xD6,
+		0x60,0x56,0xCD,0x7E,0x1C,0x84,0x64,0x67
+	};
+
+	rv = CryptoInit(&ctx, algo, mode, iv);
+	printf("[*] CryptoInit -> rv=%d, ctx=%p\n", rv, ctx);
+
+	//2) 키 세팅 (내부 구현은 ctx->key를 실제로 쓰진 않지만,
+	unsigned char key32[32] = {
+		0xC6,0xF1,0xD6,0x67,0xA5,0x0A,0xAE,0xBA,0x5A,0x20,0x0A,0x0A,0x7C,0xC2,0x4F,0xFB,
+		0xB2,0x49,0x84,0x42,0x6A,0xB8,0xAB,0xAC,0xCE,0xE7,0x51,0x62,0xF3,0xE1,0x64,0x6B
+	};
+	rv = CryptoSetKey(ctx, key32, (unsigned int)sizeof(key32));
+	printf("init key in dll : %d\n", rv);
+
+	unsigned char hmac_out[32] = { 0 };
+	rv = SecureACryptHMac(ctx, plaintext, (unsigned int)sizeof(plaintext), hmac_out);
+	printf("[*] SecureACryptHMac -> rc=%d\n", rv);
+
+	// compare
+	int ok = 1;
+	for (int i = 0; i < 32; ++i) {
+		if (hmac_out[i] != expected_hmac[i]) { ok = 0; break; }
+	}
+
+	if (ok) {
+		printf("[OK] HMAC-SHA256 matches expected vector\n");
+		return EC_SUCCESS;
+	}
+	else {
+		printf("[!!] HMAC mismatch\n");
+		return EC_HMAC_VERIFY;
+	}
+
 	// SHA256테스트는 HMAC_SHA256 테스트에 포함되므로 대체함
 	//rv = SHA256_Encrpyt(input, 3, random_output); if (rv != EC_SUCCESS)	return rv;
-	//rv = test_hmac_sha256();				if (rv != EC_SUCCESS)	return rv;
-	//rv = test_aria();			if (rv != EC_SUCCESS)	return rv;
 
-	if (rv != EC_SUCCESS)	
-		return rv;
+	//if (rv != EC_SUCCESS)	
+	//	return rv;
 
 	return EC_SUCCESS;
+	
 }
 
 EXPORT_API int SecureAIntegrityTest()

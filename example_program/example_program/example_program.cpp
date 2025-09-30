@@ -125,19 +125,12 @@ int main(int argc, char** argv) {
 
     result = CryptoInit(&ctx, algo, mode, iv);
     printf("[*] CryptoInit -> rc=%d, ctx=%p\n", result, ctx);
-    //log_rc("CryptoInit", rc, CryptoGetLastErrorCode);
 
     //// 상태 체크
-    //int st = GetState();
-    //printf("[*] GetState -> %d\n", st);
+    int st = GetState();
+    printf("[*] GetState -> %d\n", st);
+    printf("\n");
 
-    //// ===== 키 설정 (예: 128bit) =====
-    //unsigned char key[16] = {
-    //    0x11,0x22,0x33,0x44, 0x55,0x66,0x77,0x88,
-    //    0x99,0xAA,0xBB,0xCC, 0xDD,0xEE,0xFF,0x00
-    //};
-    //rc = CryptoSetKey(ctx, key, (unsigned int)sizeof(key));
-    //log_rc("CryptoSetKey", rc, CryptoGetLastErrorCode);
 
     //// ===== 테스트 데이터 =====
     unsigned char plaintext[16] = {
@@ -160,6 +153,7 @@ int main(int argc, char** argv) {
     //log_rc("SecureACryptoHash", rc, CryptoGetLastErrorCode);
 	printf("result code : %d\n", result);
     hexdump("[*] hash_out", hash_out, (unsigned int)sizeof(hash_out));
+    printf("\n");
 
     //// ===== HMAC & 검증 =====
     //1) 컨텍스트 초기화: HMAC-SHA256
@@ -167,18 +161,21 @@ int main(int argc, char** argv) {
     mode = 0; // unused
 
     result = CryptoInit(&ctx, algo, mode, iv);
+    printf("[*] CryptoInit -> rc=%d, ctx=%p\n", result, ctx);
+
     // 2) 키 세팅 (내부 구현은 ctx->key를 실제로 쓰진 않지만,
-    //    SecureACryptHMac에서 ctx->keyLen<=0 체크가 있으니 길이만 통과시키면 됨)
     //    DLL 내부에서 쓰는 고정 키: "C6F1D667A50AAEBA5A200A0A7CC24FFBB24984426AB8ABACCEE75162F3E1646B"
     unsigned char key32[32] = {
         0xC6,0xF1,0xD6,0x67,0xA5,0x0A,0xAE,0xBA,0x5A,0x20,0x0A,0x0A,0x7C,0xC2,0x4F,0xFB,
         0xB2,0x49,0x84,0x42,0x6A,0xB8,0xAB,0xAC,0xCE,0xE7,0x51,0x62,0xF3,0xE1,0x64,0x6B
     };
     result = CryptoSetKey(ctx, key32, (unsigned int)sizeof(key32));
+	printf("[*] CryptoSetKey -> rc=%d\n", result);
 
     unsigned char hmac_out[32] = { 0 };
     result = SecureACryptHMac(ctx, plaintext, (unsigned int)sizeof(plaintext), hmac_out);
 	printf("[*] SecureACryptHMac -> rc=%d\n", result);
+
     //log_rc("SecureACryptHMac", rc, CryptoGetLastErrorCode);
     hexdump("[*] hmac_out", hmac_out, (unsigned int)sizeof(hmac_out));
 

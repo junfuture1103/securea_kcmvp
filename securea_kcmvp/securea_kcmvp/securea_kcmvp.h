@@ -91,7 +91,7 @@ EXPORT_API int CryptoFinalize(void** context);
 EXPORT_API int SecureAEncrypt(void* context, unsigned char* input, unsigned int inputLength, unsigned char* output, unsigned int* outputLength);
 EXPORT_API int SecureACryptoDecrypt(void* context, unsigned char* input, unsigned int inputLength, unsigned char* output, unsigned int* outputLength);
 EXPORT_API int SecureACryptoHash(void* context, unsigned char* input, unsigned inputLength, unsigned char* output);
-EXPORT_API int SecureACryptoRandom(void* context, int requestLength, unsigned char* nonce, unsigned int nonceLength, unsigned char* personalString, unsigned int personalStringLength, unsigned char* additionalInput, unsigned int additionalInputLength, unsigned char* output);
+//EXPORT_API int SecureACryptoRandom(void* context, int requestLength, unsigned char* nonce, unsigned int nonceLength, unsigned char* personalString, unsigned int personalStringLength, unsigned char* additionalInput, unsigned int additionalInputLength, unsigned char* output);
 EXPORT_API int CryptoSetKey(void* context, unsigned char* key, unsigned int keyLength);
 EXPORT_API int CryptoCleanKey(void* context);
 EXPORT_API int SecureACryptHMac(void* context, unsigned char* input, unsigned int inputLength, unsigned char* output);
