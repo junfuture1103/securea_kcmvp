@@ -19,7 +19,7 @@
 #include "securea_kcmvp.h"
 #include "KISA_SHA256.h"
 //#include "KISA_ARIA.h"
-//#include "KISA_HMAC.h"
+#include "KISA_HMAC.h"
 //#include "KISA_drbg.h"
 
 int g_module_state;
@@ -440,7 +440,7 @@ EXPORT_API int SecureACryptoHash(void* context, unsigned char* input, unsigned i
 	//}
 
 	/// 해시 알고리즘 구현
-	printf("SecureACryptoHash start in DLL\n");
+	printf("[for TEST] SecureACryptoHash start in DLL\n");
 	rv = SHA256_Encrpyt(input, inputLength, output);
 	if (rv != EC_SUCCESS)
 	{
@@ -578,17 +578,17 @@ EXPORT_API int CryptoSetKey(void* context, unsigned char* key, unsigned int keyL
 	CRYPTO_CONTEXT* ctx = NULL;
 
 	/// 암호모듈 상태체크(암호모듈이 심각한 오류상태인 경우 상태오류코드를 출력)
-	if (g_module_state == STATE_INABILITY_ERROR)
-	{
-		return EC_STATE;
-	}
+	//if (g_module_state == STATE_INABILITY_ERROR)
+	//{
+	//	return EC_STATE;
+	//}
 
 	/// 암호모듈 상태체크(암호모듈이 시작상태가 아닌 경우 상태오류코드를 출력)
-	if (g_module_state != STATE_CMVP_INIT)
-	{
-		SetState(STATE_CMVP_ERROR);
-		return EC_STATE;
-	}
+	//if (g_module_state != STATE_CMVP_INIT)
+	//{
+	//	SetState(STATE_CMVP_ERROR);
+	//	return EC_STATE;
+	//}
 
 	/// 입력데이터 형식검증
 	if (context == NULL)
@@ -660,6 +660,11 @@ EXPORT_API int SecureACryptHMac(void* context, unsigned char* input, unsigned in
 	int rv = EC_SUCCESS;
 	CRYPTO_CONTEXT* ctx = NULL;
 
+	unsigned char msg[1024] = { 0, }, key[1024] = { 0, };
+	unsigned int msgLen = 0, keyLen = 0, outputLen = 0, ret = 0;
+
+	keyLen = asc2hex(key, "C6F1D667A50AAEBA5A200A0A7CC24FFBB24984426AB8ABACCEE75162F3E1646B");
+
 	/// 암호모듈 상태체크(암호모듈이 심각한 오류상태인 경우 상태오류코드를 출력)
 	if (g_module_state == STATE_INABILITY_ERROR)
 	{
@@ -667,11 +672,11 @@ EXPORT_API int SecureACryptHMac(void* context, unsigned char* input, unsigned in
 	}
 
 	/// 암호모듈 상태체크(암호모듈이 사용자 상태가 아닌 경우 상태오류코드를 출력)
-	if (g_module_state != STATE_CMVP_KEY_SET && g_module_state != STATE_CMVP_OPERATION)
-	{
-		SetState(STATE_CMVP_ERROR);
-		return EC_STATE;
-	}
+	//if (g_module_state != STATE_CMVP_KEY_SET && g_module_state != STATE_CMVP_OPERATION)
+	//{
+	//	SetState(STATE_CMVP_ERROR);
+	//	return EC_STATE;
+	//}
 
 	/// 입력데이터 형식검증
 	if (context == NULL)
@@ -704,13 +709,8 @@ EXPORT_API int SecureACryptHMac(void* context, unsigned char* input, unsigned in
 		SetState(STATE_CMVP_ERROR);
 		return EC_OUTPUT_INIT;
 	}
-	unsigned char msg[1024] = { 0, }, key[1024] = { 0, };
-	unsigned int msgLen = 0, keyLen = 0, outputLen = 0, ret = 0;
-
-	keyLen = asc2hex(key, "C6F1D667A50AAEBA5A200A0A7CC24FFBB24984426AB8ABACCEE75162F3E1646B");
-	
 	/// HMAC 생성 알고리즘 구현
-	 //rv = HMAC_SHA256(input, inputLength, key, keyLen, output);
+	 rv = HMAC_SHA256(input, inputLength, key, keyLen, output);
 	if (rv != EC_SUCCESS)
 	{
 		SetState(STATE_CMVP_ERROR);

@@ -140,10 +140,12 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="KISA_HMAC.c" />
     <ClCompile Include="KISA_SHA256.c" />
     <ClCompile Include="securea_kcmvp.c" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="KISA_HMAC.h" />
     <ClInclude Include="KISA_SHA256.h" />
     <ClInclude Include="securea_kcmvp.h" />
   </ItemGroup>

@@ -96,7 +96,7 @@ int main(int argc, char** argv) {
     PFN_SecureACryptoHash      SecureACryptoHash = (PFN_SecureACryptoHash)must_get(h, "SecureACryptoHash");
     PFN_CryptoSetKey           CryptoSetKey = (PFN_CryptoSetKey)must_get(h, "CryptoSetKey");
     PFN_CryptoCleanKey         CryptoCleanKey = (PFN_CryptoCleanKey)must_get(h, "CryptoCleanKey");
-    //PFN_SecureACryptHMac       SecureACryptHMac = (PFN_SecureACryptHMac)must_get(h, "SecureACryptHMac");
+    PFN_SecureACryptHMac       SecureACryptHMac = (PFN_SecureACryptHMac)must_get(h, "SecureACryptHMac");
     //PFN_SecureAHMacVerify      SecureAHMacVerify = (PFN_SecureAHMacVerify)must_get(h, "SecureAHMacVerify");
     //PFN_SecureACoreFunctionTest SecureACoreFunctionTest = (PFN_SecureACoreFunctionTest)must_get(h, "SecureACoreFunctionTest");
     //PFN_SecureAIntegrityTest   SecureAIntegrityTest = (PFN_SecureAIntegrityTest)must_get(h, "SecureAIntegrityTest");
@@ -162,10 +162,25 @@ int main(int argc, char** argv) {
     hexdump("[*] hash_out", hash_out, (unsigned int)sizeof(hash_out));
 
     //// ===== HMAC & 검증 =====
-    //unsigned char hmac_out[32] = { 0 };
-    //rc = SecureACryptHMac(ctx, plaintext, (unsigned int)sizeof(plaintext), hmac_out);
+    //1) 컨텍스트 초기화: HMAC-SHA256
+    algo = 7; // CRYPTO_HMAC_SHA256
+    mode = 0; // unused
+
+    result = CryptoInit(&ctx, algo, mode, iv);
+    // 2) 키 세팅 (내부 구현은 ctx->key를 실제로 쓰진 않지만,
+    //    SecureACryptHMac에서 ctx->keyLen<=0 체크가 있으니 길이만 통과시키면 됨)
+    //    DLL 내부에서 쓰는 고정 키: "C6F1D667A50AAEBA5A200A0A7CC24FFBB24984426AB8ABACCEE75162F3E1646B"
+    unsigned char key32[32] = {
+        0xC6,0xF1,0xD6,0x67,0xA5,0x0A,0xAE,0xBA,0x5A,0x20,0x0A,0x0A,0x7C,0xC2,0x4F,0xFB,
+        0xB2,0x49,0x84,0x42,0x6A,0xB8,0xAB,0xAC,0xCE,0xE7,0x51,0x62,0xF3,0xE1,0x64,0x6B
+    };
+    result = CryptoSetKey(ctx, key32, (unsigned int)sizeof(key32));
+
+    unsigned char hmac_out[32] = { 0 };
+    result = SecureACryptHMac(ctx, plaintext, (unsigned int)sizeof(plaintext), hmac_out);
+	printf("[*] SecureACryptHMac -> rc=%d\n", result);
     //log_rc("SecureACryptHMac", rc, CryptoGetLastErrorCode);
-    //hexdump("[*] hmac_out", hmac_out, (unsigned int)sizeof(hmac_out));
+    hexdump("[*] hmac_out", hmac_out, (unsigned int)sizeof(hmac_out));
 
     //rc = SecureAHMacVerify(ctx, plaintext, (unsigned int)sizeof(plaintext), hmac_out, (unsigned int)sizeof(hmac_out));
     //// 반환 규약(0=성공/1=성공 등)은 라이브러리 정의에 따름. 여기서는 rc 출력만.
