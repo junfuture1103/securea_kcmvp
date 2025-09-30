@@ -101,6 +101,7 @@ EXPORT_API int SecureACryptHMac(void* context, unsigned char* input, unsigned in
 EXPORT_API int SecureACoreFunctionTest();
 EXPORT_API int SecureAIntegrityTest();
 EXPORT_API int CryptoGetLastErrorCode();
+EXPORT_API int TestFunc(void);
 
 //No EXPORT_API
 int asc2hex(unsigned char* dst, const char* src);

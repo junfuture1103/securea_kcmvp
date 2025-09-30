@@ -3,7 +3,7 @@
 #include <stdlib.h>
 #include <stdio.h>
 
-#include "KISA_SHA256.h"  // SHA256 엔진 사용
+//#include "KISA_SHA256.h"  // SHA256 엔진 사용
 #include "KISA_HMAC.h"  // SHA256 엔진 사용
 
 // 예시: 고정 키. 실제 구현에선 보안 영역 혹은 TPM 등에서 가져오는 방식으로 대체

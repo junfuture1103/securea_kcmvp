@@ -1,0 +1,98 @@
+## ===== Visual Studio core =====
+.vs/
+*.suo
+*.user
+*.userosscache
+*.sln.docstates
+*.VC.db*
+*.VC.opendb
+*.vscode/       # 원하면 사용 (필요시 주석)
+
+## ===== IntelliSense / PCH =====
+ipch/
+*.ipch
+*.iobj
+*.ipdb
+
+## ===== Build outputs (MSBuild) =====
+[Bb]in/
+[Oo]bj/
+Debug*/
+Release*/
+RelWithDebInfo*/
+MinSizeRel*/
+x64/
+x86/
+ARM/
+ARM64/
+*.tlog/
+*.lastcodeanalysissucceeded
+*.lastbuildstate
+.vs/
+
+## ===== Artifacts / Binaries =====
+*.exe
+*.dll
+*.lib
+*.exp
+*.pdb
+*.idb
+*.ilk
+*.msi
+*.msix
+*.appx
+*.apk
+*.iso
+
+## ===== Logs / Reports =====
+*.log
+*.wrn
+*.err
+*.trx
+TestResult*/
+*.coverage
+*.coveragexml
+
+## ===== Cache / Temp =====
+*.cache
+*.tmp
+*.temp
+*.pch
+*.obj
+*.rsp
+
+## ===== Copilot / Indexers =====
+# CopilotIndices 등 .vs 내부 DB류는 위 .vs/로 커버되지만 혹시를 위해
+**/CopilotIndices*/
+**/SemanticSymbols.db*
+**/CodeChunks.db*
+**/FileContentIndex*.vsidx
+
+## ===== CMake (있다면) =====
+[Cc]Make[Cc]ache.txt
+[Cc]MakeFiles/
+cmake-build*/
+build*/
+out*/
+
+## ===== Package managers =====
+packages/
+*.nupkg
+*.snupkg
+*.nuspec
+# vcpkg buildtrees / installed (원하면 추적 제외)
+vcpkg_installed/
+buildtrees/
+downloads/
+
+## ===== Crash / Misc =====
+*.dmp
+*.opendb
+*.db-shm
+*.db-wal
+*.db
+
+## ===== OS noise =====
+.DS_Store
+Thumbs.db
+desktop.ini

@@ -34,6 +34,8 @@ typedef int (SECUREA_CALLCONV* PFN_SecureAHMacVerify)(void* context, unsigned ch
 typedef int (SECUREA_CALLCONV* PFN_SecureACoreFunctionTest)(void);
 typedef int (SECUREA_CALLCONV* PFN_SecureAIntegrityTest)(void);
 typedef int (SECUREA_CALLCONV* PFN_CryptoGetLastErrorCode)(void);
+typedef int (SECUREA_CALLCONV* PFN_SecureATestFunc)(void);
+
 
 // ===== 유틸 =====
 static void hexdump(const char* title, const unsigned char* buf, unsigned int len) {
@@ -94,27 +96,35 @@ int main(int argc, char** argv) {
     PFN_SecureACryptoHash      SecureACryptoHash = (PFN_SecureACryptoHash)must_get(h, "SecureACryptoHash");
     PFN_CryptoSetKey           CryptoSetKey = (PFN_CryptoSetKey)must_get(h, "CryptoSetKey");
     PFN_CryptoCleanKey         CryptoCleanKey = (PFN_CryptoCleanKey)must_get(h, "CryptoCleanKey");
-    PFN_SecureACryptHMac       SecureACryptHMac = (PFN_SecureACryptHMac)must_get(h, "SecureACryptHMac");
-    PFN_SecureAHMacVerify      SecureAHMacVerify = (PFN_SecureAHMacVerify)must_get(h, "SecureAHMacVerify");
-    PFN_SecureACoreFunctionTest SecureACoreFunctionTest = (PFN_SecureACoreFunctionTest)must_get(h, "SecureACoreFunctionTest");
-    PFN_SecureAIntegrityTest   SecureAIntegrityTest = (PFN_SecureAIntegrityTest)must_get(h, "SecureAIntegrityTest");
-    PFN_CryptoGetLastErrorCode CryptoGetLastErrorCode = (PFN_CryptoGetLastErrorCode)must_get(h, "CryptoGetLastErrorCode");
+    //PFN_SecureACryptHMac       SecureACryptHMac = (PFN_SecureACryptHMac)must_get(h, "SecureACryptHMac");
+    //PFN_SecureAHMacVerify      SecureAHMacVerify = (PFN_SecureAHMacVerify)must_get(h, "SecureAHMacVerify");
+    //PFN_SecureACoreFunctionTest SecureACoreFunctionTest = (PFN_SecureACoreFunctionTest)must_get(h, "SecureACoreFunctionTest");
+    //PFN_SecureAIntegrityTest   SecureAIntegrityTest = (PFN_SecureAIntegrityTest)must_get(h, "SecureAIntegrityTest");
+    //PFN_CryptoGetLastErrorCode CryptoGetLastErrorCode = (PFN_CryptoGetLastErrorCode)must_get(h, "CryptoGetLastErrorCode");
+    
+    // 3-2) must_get 바인딩 (다른 심볼들과 함께)
+    PFN_SecureATestFunc SecureATestFunc = (PFN_SecureATestFunc)must_get(h, "TestFunc");
 
+    // 3-3) 호출 (LoadLibrary 이후, 원하는 위치에서)
+    int rc_test = SecureATestFunc();
+    printf("[*] SecureATestFunc -> rc=%d\n", rc_test);
+
+    int result = 0;
     // ===== 사전 자기진단(PE 내장 테스트) =====
-    int rc = SecureACoreFunctionTest();
-    log_rc("SecureACoreFunctionTest", rc, CryptoGetLastErrorCode);
+    //int rc = SecureACoreFunctionTest();
+    //log_rc("SecureACoreFunctionTest", rc, CryptoGetLastErrorCode);
 
-    rc = SecureAIntegrityTest();
-    log_rc("SecureAIntegrityTest", rc, CryptoGetLastErrorCode);
+    //rc = SecureAIntegrityTest();
+    //log_rc("SecureAIntegrityTest", rc, CryptoGetLastErrorCode);
 
     //// ===== 컨텍스트 초기화 =====
-    //void* ctx = NULL;
-    //unsigned int algo = 1; // 라이브러리 enum에 맞춰 조정
-    //unsigned int mode = 1; // 예: 1=CBC/CTR 등 라이브러리 정의
-    //unsigned char iv[16] = { 0 };
+    void* ctx = NULL;
+    unsigned int algo = 1; // 라이브러리 enum에 맞춰 조정
+    unsigned int mode = 1; // 예: 1=CBC/CTR 등 라이브러리 정의
+    unsigned char iv[16] = { 0 };
 
-    //rc = CryptoInit(&ctx, algo, mode, iv);
-    //printf("[*] CryptoInit -> rc=%d, ctx=%p\n", rc, ctx);
+    result = CryptoInit(&ctx, algo, mode, iv);
+    printf("[*] CryptoInit -> rc=%d, ctx=%p\n", result, ctx);
     //log_rc("CryptoInit", rc, CryptoGetLastErrorCode);
 
     //// 상태 체크
@@ -130,25 +140,26 @@ int main(int argc, char** argv) {
     //log_rc("CryptoSetKey", rc, CryptoGetLastErrorCode);
 
     //// ===== 테스트 데이터 =====
-    //unsigned char plaintext[16] = {
-    //    0x11,0x11,0x11,0x11, 0xAA,0xAA,0xAA,0xAA,
-    //    0x11,0x11,0x11,0x11, 0xBB,0xBB,0xBB,0xBB
-    //};
+    unsigned char plaintext[16] = {
+        0x11,0x11,0x11,0x11, 0xAA,0xAA,0xAA,0xAA,
+        0x11,0x11,0x11,0x11, 0xBB,0xBB,0xBB,0xBB
+    };
     //hexdump("[*] plaintext", plaintext, sizeof(plaintext));
 
     //// ===== 암호화 =====
     //unsigned char ciphertext[64] = { 0 };
     //unsigned int outLen = sizeof(ciphertext);
-    //rc = SecureAEncrypt(ctx, plaintext, (unsigned int)sizeof(plaintext), ciphertext, &outLen);
-    //printf("[*] SecureAEncrypt -> rc=%d, outLen=%u\n", rc, outLen);
+    //result = SecureAEncrypt(ctx, plaintext, (unsigned int)sizeof(plaintext), ciphertext, &outLen);
+    //printf("[*] SecureAEncrypt -> rc=%d, outLen=%u\n", result, outLen);
     //log_rc("SecureAEncrypt", rc, CryptoGetLastErrorCode);
     //hexdump("[*] ciphertext", ciphertext, outLen);
 
     //// ===== 해시 (출력 길이는 라이브러리 고정값 가정: 예 32바이트) =====
-    //unsigned char hash_out[32] = { 0 };
-    //rc = SecureACryptoHash(ctx, plaintext, (unsigned int)sizeof(plaintext), hash_out);
+    unsigned char hash_out[32] = { 0 };
+    result = SecureACryptoHash(ctx, plaintext, (unsigned int)sizeof(plaintext), hash_out);
     //log_rc("SecureACryptoHash", rc, CryptoGetLastErrorCode);
-    //hexdump("[*] hash_out", hash_out, (unsigned int)sizeof(hash_out));
+	printf("result code : %d\n", result);
+    hexdump("[*] hash_out", hash_out, (unsigned int)sizeof(hash_out));
 
     //// ===== HMAC & 검증 =====
     //unsigned char hmac_out[32] = { 0 };

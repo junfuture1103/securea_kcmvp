@@ -18,25 +18,7 @@
     <ClCompile Include="securea_kcmvp.c">
       <Filter>소스 파일</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\..\..\..\Downloads\KISA_SHA256\KISA_SHA256\[01] C-C++\KISA_SHA256.c">
-      <Filter>소스 파일</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\..\..\..\Downloads\ARIA\KISA_ARIA.c">
-      <Filter>소스 파일</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\..\..\..\Downloads\HMAC\[01] C,C++\KISA_HMAC.c">
-      <Filter>소스 파일</Filter>
-    </ClCompile>
-    <ClCompile Include="integrity_test.c">
-      <Filter>소스 파일</Filter>
-    </ClCompile>
-    <ClCompile Include="KISA_drbg.c">
-      <Filter>소스 파일</Filter>
-    </ClCompile>
-    <ClCompile Include="ariacbc.c">
-      <Filter>소스 파일</Filter>
-    </ClCompile>
-    <ClCompile Include="seedcbc.c">
+    <ClCompile Include="KISA_SHA256.c">
       <Filter>소스 파일</Filter>
     </ClCompile>
   </ItemGroup>
@@ -44,28 +26,7 @@
     <ClInclude Include="securea_kcmvp.h">
       <Filter>헤더 파일</Filter>
     </ClInclude>
-    <ClInclude Include="KISA_ARIA.h">
-      <Filter>헤더 파일</Filter>
-    </ClInclude>
     <ClInclude Include="KISA_SHA256.h">
-      <Filter>헤더 파일</Filter>
-    </ClInclude>
-    <ClInclude Include="KISA_HMAC.h">
-      <Filter>헤더 파일</Filter>
-    </ClInclude>
-    <ClInclude Include="common.h">
-      <Filter>헤더 파일</Filter>
-    </ClInclude>
-    <ClInclude Include="integrity_test.h">
-      <Filter>헤더 파일</Filter>
-    </ClInclude>
-    <ClInclude Include="KISA_drbg.h">
-      <Filter>헤더 파일</Filter>
-    </ClInclude>
-    <ClInclude Include="ariacbc.h">
-      <Filter>헤더 파일</Filter>
-    </ClInclude>
-    <ClInclude Include="seedcbc.h">
       <Filter>헤더 파일</Filter>
     </ClInclude>
   </ItemGroup>

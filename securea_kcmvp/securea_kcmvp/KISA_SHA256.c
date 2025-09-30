@@ -3,7 +3,7 @@
 #include <stdlib.h>
 #include <string.h>
 
-const UINT SHA256_K[64] = 
+const KISA_UINT SHA256_K[64] =
 {
 	0x428a2f98, 0x71374491, 0xb5c0fbcf, 0xe9b5dba5, 0x3956c25b, 0x59f111f1,
 	0x923f82a4, 0xab1c5ed5, 0xd807aa98, 0x12835b01, 0x243185be, 0x550c7dc3,
@@ -36,9 +36,9 @@ const UINT SHA256_K[64] =
 	#define LITTLE_D2B(D, B)	*(ULONG_PTR)(B) = ENDIAN_REVERSE_ULONG(D)
 #elif defined(LITTLE_ENDIAN)
 	#define BIG_B2D(B, D)		D = ENDIAN_REVERSE_ULONG(*(ULONG_PTR)(B))
-	#define BIG_D2B(D, B)		*(ULONG_PTR)(B) = ENDIAN_REVERSE_ULONG(D)
-	#define LITTLE_B2D(B, D)	D = *(ULONG_PTR)(B)
-	#define LITTLE_D2B(D, B)	*(ULONG_PTR)(B) = (ULONG)(D)
+	#define BIG_D2B(D, B)		*(KISA_ULONG_PTR)(B) = ENDIAN_REVERSE_ULONG(D)
+	#define LITTLE_B2D(B, D)	D = *(KISA_ULONG_PTR)(B)
+	#define LITTLE_D2B(D, B)	*(KISA_ULONG_PTR)(B) = (KISA_ULONG)(D)
 #else
 	#error ERROR : Invalid DataChangeType
 #endif
@@ -62,10 +62,10 @@ const UINT SHA256_K[64] =
 //						  ChainVar		- 연쇄변수의 포인터 변수
 // o 출력				: 
 //*********************************************************************************************************************************
-void SHA256_Transform(ULONG_PTR Message, ULONG_PTR ChainVar)
+void SHA256_Transform(KISA_ULONG_PTR Message, KISA_ULONG_PTR ChainVar)
 {
-	ULONG a, b, c, d, e, f, g, h, T1, X[64];
-	ULONG j;
+	KISA_ULONG a, b, c, d, e, f, g, h, T1, X[64];
+	KISA_ULONG j;
 
 #define FF(a, b, c, d, e, f, g, h, j) {							\
 	T1 = h + Sigma1(e) + Ch(e, f, g) + SHA256_K[j] + X[j];		\
@@ -142,10 +142,10 @@ void SHA256_Init( OUT SHA256_INFO *Info )
 //						  uDataLen	 - 입력 메시지의 바이트 길이
 // o 출력				: 
 //*********************************************************************************************************************************
-void SHA256_Process( OUT SHA256_INFO *Info, IN const BYTE *pszMessage, IN UINT uDataLen )
+void SHA256_Process( OUT SHA256_INFO *Info, IN const KISA_BYTE *pszMessage, IN KISA_UINT uDataLen )
 {
 
-	UINT remain_buffer = Info->remain_num;
+	KISA_UINT remain_buffer = Info->remain_num;
 
 	if ((Info->uLowLength += (uDataLen << 3)) < 0)
 		Info->uHighLength++;
@@ -154,14 +154,14 @@ void SHA256_Process( OUT SHA256_INFO *Info, IN const BYTE *pszMessage, IN UINT u
 
 	while ((uDataLen + remain_buffer) >= SHA256_DIGEST_BLOCKLEN)
 	{
-		memcpy((UCHAR_PTR)(Info->szBuffer + remain_buffer), pszMessage, (SINT)SHA256_DIGEST_BLOCKLEN);
-		SHA256_Transform((ULONG_PTR)Info->szBuffer, Info->uChainVar);
+		memcpy((KISA_UCHAR_PTR)(Info->szBuffer + remain_buffer), pszMessage, (KISA_SINT)SHA256_DIGEST_BLOCKLEN);
+		SHA256_Transform((KISA_ULONG_PTR)Info->szBuffer, Info->uChainVar);
 		pszMessage += (SHA256_DIGEST_BLOCKLEN - remain_buffer);
 		uDataLen -= (SHA256_DIGEST_BLOCKLEN - remain_buffer);
 		remain_buffer = 0;
 	}
 
-	memcpy((UCHAR_PTR)(Info->szBuffer + remain_buffer), pszMessage, uDataLen);
+	memcpy((KISA_UCHAR_PTR)(Info->szBuffer + remain_buffer), pszMessage, uDataLen);
 	Info->remain_num = remain_buffer + uDataLen;
 }
 
@@ -171,37 +171,37 @@ void SHA256_Process( OUT SHA256_INFO *Info, IN const BYTE *pszMessage, IN UINT u
 //						  pszDigest	- SHA-256 해쉬값을 저장할 포인터 변수
 // o 출력				:
 //*********************************************************************************************************************************
-void SHA256_Close( OUT SHA256_INFO *Info, IN BYTE *pszDigest )
+void SHA256_Close( OUT SHA256_INFO *Info, IN KISA_BYTE *pszDigest )
 {
-	ULONG i, Index;
+	KISA_ULONG i, Index;
 
 	Index = (Info->uLowLength >> 3) % SHA256_DIGEST_BLOCKLEN;
 	Info->szBuffer[Index++] = 0x80;
 
 	if (Index > SHA256_DIGEST_BLOCKLEN - 8)
 	{
-		memset((UCHAR_PTR)Info->szBuffer + Index, 0, (SINT)(SHA256_DIGEST_BLOCKLEN - Index));
-		SHA256_Transform((ULONG_PTR)Info->szBuffer, Info->uChainVar);
-		memset((UCHAR_PTR)Info->szBuffer, 0, (SINT)SHA256_DIGEST_BLOCKLEN - 8);
+		memset((KISA_UCHAR_PTR)Info->szBuffer + Index, 0, (KISA_SINT)(SHA256_DIGEST_BLOCKLEN - Index));
+		SHA256_Transform((KISA_ULONG_PTR)Info->szBuffer, Info->uChainVar);
+		memset((KISA_UCHAR_PTR)Info->szBuffer, 0, (KISA_SINT)SHA256_DIGEST_BLOCKLEN - 8);
 	}
 	else
-		memset((UCHAR_PTR)Info->szBuffer + Index, 0, (SINT)(SHA256_DIGEST_BLOCKLEN - Index - 8));
+		memset((KISA_UCHAR_PTR)Info->szBuffer + Index, 0, (KISA_SINT)(SHA256_DIGEST_BLOCKLEN - Index - 8));
 
 #if defined(LITTLE_ENDIAN)
 	Info->uLowLength = ENDIAN_REVERSE_ULONG(Info->uLowLength);
 	Info->uHighLength = ENDIAN_REVERSE_ULONG(Info->uHighLength);
 #endif
 
-	((ULONG_PTR)Info->szBuffer)[SHA256_DIGEST_BLOCKLEN / 4 - 2] = Info->uHighLength;
-	((ULONG_PTR)Info->szBuffer)[SHA256_DIGEST_BLOCKLEN / 4 - 1] = Info->uLowLength;
+	((KISA_ULONG_PTR)Info->szBuffer)[SHA256_DIGEST_BLOCKLEN / 4 - 2] = Info->uHighLength;
+	((KISA_ULONG_PTR)Info->szBuffer)[SHA256_DIGEST_BLOCKLEN / 4 - 1] = Info->uLowLength;
 
-	SHA256_Transform((ULONG_PTR)Info->szBuffer, Info->uChainVar);
+	SHA256_Transform((KISA_ULONG_PTR)Info->szBuffer, Info->uChainVar);
 
 	for (i = 0; i < SHA256_DIGEST_VALUELEN; i += 4)
 		BIG_D2B((Info->uChainVar)[i / 4], &(pszDigest[i]));
 }
 
-void SHA256_Encrpyt( IN const BYTE *pszMessage, IN UINT uPlainTextLen, OUT BYTE *pszDigest )
+int SHA256_Encrpyt( IN const KISA_BYTE *pszMessage, IN KISA_UINT uPlainTextLen, OUT KISA_BYTE *pszDigest )
 {
 	SHA256_INFO info;
 
@@ -211,5 +211,5 @@ void SHA256_Encrpyt( IN const BYTE *pszMessage, IN UINT uPlainTextLen, OUT BYTE 
 
 	SHA256_Close( &info, pszDigest );
 
-	return;
+	return 0;
 }
